@@ -1,0 +1,54 @@
+footprint: [[0.40, 0.35], [0.40, -0.35], [-0.40, -0.35], [-0.40, 0.35]] # Tracer
+
+map_type: costmap
+
+global_inflation_layer:
+  enabled: true
+  cost_scaling_factor: 1.75
+  inflation_radius: 0.5
+
+local_inflation_layer:
+  enabled: true
+  cost_scaling_factor: 5.0
+  inflation_radius: 0.25
+
+static_layer:
+  unknown_cost_value: 2
+  lethal_cost_threshold: 96
+  first_map_only: false
+  subscribe_to_updates: false
+  track_unknown_space: false
+  use_maximum: true
+  trinary_costmap: false
+
+laser_obstacle_layer:
+  observation_sources: laser_scan  lidar_clear
+  track_unknown_space: true
+  footprint_clearing_enabled: true
+  combination_method: 1 # 0 - overwrite, 1 - max, 99 - nothing
+
+  laser_scan:
+    sensor_frame: lslidar
+    data_type: PointCloud2
+    topic: /velodyne_points
+    marking: true
+    clearing: false
+    obstacle_range: 4.
+    raytrace_range: 5.
+    inf_is_valid: true
+    min_obstacle_height: 0.03 # default 0, meters
+    max_obstacle_height: 0.6 # default 3, meters
+    expected_update_rate: 0.0 # default 0, if not updating at this rate at least, remove from buffer
+    observation_persistence: 0.0 # default 0, use all measurements taken during now-value, 0=latest
+    voxel_filter: true # default off, apply voxel filter to sensor, recommend on
+    clear_after_reading: true # default false, clear the buffer after the layer gets readings from it
+
+  lidar_clear:
+    enabled: true #default true, can be toggled on/off with associated service call
+    data_type: PointCloud2
+    topic: /velodyne_points
+    marking: false
+    clearing: true
+    max_z: 0.7 # default 0, meters
+    min_z: -0.1 # default 10, meters
+    model_type: 1 # default 0, model type for frustum. 0=depth camera, 1=3d lidar like VLP16 or similar
